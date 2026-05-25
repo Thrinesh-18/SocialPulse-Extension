@@ -1,0 +1,304 @@
+/* Styles for Verdiqt extension sidebar */
+#verdiqt-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 380px !important;
+    height: 100vh !important;
+    background: #0F0F1A !important;
+    color: #E2E8F0 !important;
+    border-left: 1px solid #2D3748 !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    transform: translateX(100%) !important;
+    transition: transform 0.3s ease-in-out !important;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3) !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    outline: none !important;
+    text-decoration: none !important;
+    line-height: normal !important;
+}
+
+#verdiqt-sidebar.visible {
+    transform: translateX(0) !important;
+}
+
+#verdiqt-sidebar * {
+    box-sizing: border-box !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #2D3748;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    color: #E2E8F0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: #E2E8F0;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.close-btn:hover {
+    background-color: #2D3748;
+}
+
+.section {
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Loading Section */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #2D3748;
+    border-top: 4px solid #667EEA;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-section {
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Stats Container */
+.stats-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-box.positive {
+    background-color: rgba(34, 197, 94, 0.2);
+    border: 1px solid #22C55E;
+}
+
+.stat-box.negative {
+    background-color: rgba(239, 68, 68, 0.2);
+    border: 1px solid #EF4444;
+}
+
+.stat-box.neutral {
+    background-color: rgba(245, 158, 11, 0.2);
+    border: 1px solid #F59E0B;
+}
+
+.stat-number {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* Reviews Container */
+.reviews-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 300px);
+}
+
+/* Custom Scrollbar */
+.reviews-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.reviews-container::-webkit-scrollbar-track {
+    background: #1A202C;
+}
+
+.reviews-container::-webkit-scrollbar-thumb {
+    background: #4A5568;
+    border-radius: 3px;
+}
+
+.reviews-container::-webkit-scrollbar-thumb:hover {
+    background: #667EEA;
+}
+
+.review-card {
+    background: #1A202C;
+    border: 1px solid #2D3748;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+}
+
+.review-card:hover {
+    border-color: #4A5568;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sentiment-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sentiment-badge.positive {
+    background-color: #22C55E;
+    color: white;
+}
+
+.sentiment-badge.negative {
+    background-color: #EF4444;
+    color: white;
+}
+
+.sentiment-badge.neutral {
+    background-color: #F59E0B;
+    color: white;
+}
+
+.review-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #CBD5E0;
+}
+
+.confidence {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 5px;
+}
+
+/* Error Section */
+.error-message {
+    text-align: center;
+    color: #EF4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #EF4444;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+/* Footer */
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #2D3748;
+}
+
+.reanalyze-btn {
+    width: 100% !important;
+    background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 14px 20px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin: 0 !important;
+    outline: none !important;
+    text-decoration: none !important;
+    display: block !important;
+    text-align: center !important;
+    line-height: normal !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+.reanalyze-btn:hover {
+    background: linear-gradient(135deg, #5A67D8 0%, #6B46C1 100%) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+    color: white !important;
+}
+
+.reanalyze-btn:active {
+    transform: translateY(0) !important;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Languages container */
+.languages-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
+
+.language-pill {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 500;
+    background: #2D3748;
+    color: #A0AEC0;
+    border: 1px solid #4A5568;
+}
+
+.language-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    background: #2D2D44;
+    color: #A0AEC0;
+    margin-left: 6px;
+}
+
+.reanalyze-btn:disabled {
+    background: #4A5568;
+    cursor: not-allowed;
+}

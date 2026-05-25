@@ -1,0 +1,7 @@
+# Python dependencies for Verdiqt backend
+fastapi
+uvicorn
+transformers
+torch
+langdetect
+pydantic

@@ -1,0 +1,59 @@
+<!-- Sidebar HTML for Verdiqt extension -->
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+    <div id="verdiqt-sidebar">
+        <!-- Header -->
+        <div class="sidebar-header">
+            <h2>Verdiqt</h2>
+            <button id="close-sidebar" class="close-btn">×</button>
+        </div>
+
+        <!-- Loading Section -->
+        <div id="loading-section" class="section hidden">
+            <div class="spinner"></div>
+            <p>Analyzing reviews...</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results-section" class="section hidden">
+            <!-- Overall Stats -->
+            <div class="stats-container">
+                <div class="stat-box positive">
+                    <div class="stat-number" id="positive-percent">0%</div>
+                    <div class="stat-label">Positive</div>
+                </div>
+                <div class="stat-box negative">
+                    <div class="stat-number" id="negative-percent">0%</div>
+                    <div class="stat-label">Negative</div>
+                </div>
+                <div class="stat-box neutral">
+                    <div class="stat-number" id="neutral-percent">0%</div>
+                    <div class="stat-label">Neutral</div>
+                </div>
+            </div>
+
+            <!-- Summary Message -->
+            <div id="reviews-list" class="reviews-container">
+                <!-- Summary will be populated here -->
+            </div>
+        </div>
+
+        <!-- Error Section -->
+        <div id="error-section" class="section hidden">
+            <div class="error-message">
+                <p id="error-text">Could not connect to Verdiqt backend. Make sure it is running on port 8000.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="sidebar-footer">
+            <button id="reanalyze-btn" class="reanalyze-btn">Re-analyze</button>
+        </div>
+    </div>
+    <script src="sidebar.js"></script>
+</body>
+</html>

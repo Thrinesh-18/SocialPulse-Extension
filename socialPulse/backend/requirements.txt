@@ -1,4 +1,4 @@
-# Python dependencies for Verdiqt backend
+# Python dependencies for Social Pulse backend
 fastapi
 uvicorn
 transformers

@@ -1,8 +1,8 @@
-// Verdiqt Extension - Content Script for Automatic Analysis
-console.log('🚀 Verdiqt: Content script loading on', window.location.href);
+// socialPulse Extension - Content Script for Automatic Analysis
+console.log('🚀 Social Pulse: Content script loading on', window.location.href);
 
 // Global variables
-let verdiqtButton = null;
+let socialPulseButton = null;
 let sidebarInjected = false;
 let analysisInProgress = false;
 let lastAnalyzedReviewCount = 0;
@@ -10,14 +10,14 @@ let contentObserver = null;
 let scrollAnalysisTimeout = null;
 
 // Create the floating button
-function createVerdiqtButton() {
-    console.log('🔧 Verdiqt: Creating floating button...');
+function createSocialPulseButton() {
+    console.log('🔧 Social Pulse: Creating floating button...');
     
     // Create new button
     const button = document.createElement('div');
-    button.id = 'verdiqt-float-btn';
-    button.innerHTML = 'V';
-    button.title = 'Verdiqt - Click to open sidebar';
+    button.id = 'social-pulse-float-btn';
+    button.innerHTML = 'SP';
+    button.title = 'socialPulse - Click to open sidebar';
     
     // Apply styles with maximum priority
     const styles = [
@@ -26,7 +26,7 @@ function createVerdiqtButton() {
         'right: 20px', 
         'width: 60px',
         'height: 60px',
-        'background: linear-gradient(135deg, #667EEA 0%, #764BA2 100%)',
+        'background: linear-gradient(135deg, #22D3EE 0%, #6366F1 100%)',
         'color: white',
         'border-radius: 50%',
         'display: flex',
@@ -36,7 +36,7 @@ function createVerdiqtButton() {
         'font-weight: bold',
         'cursor: pointer',
         'z-index: 99999999', // Maximum z-index
-        'box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6)',
+        'box-shadow: 0 4px 20px rgba(34, 211, 238, 0.6)',
         'transition: all 0.3s ease',
         'font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         'border: 3px solid rgba(255,255,255,0.3)',
@@ -54,25 +54,25 @@ function createVerdiqtButton() {
     // Add hover effects
     button.addEventListener('mouseenter', () => {
         button.style.transform = 'scale(1.1) !important';
-        button.style.boxShadow = '0 6px 25px rgba(102, 126, 234, 0.8) !important';
+        button.style.boxShadow = '0 6px 25px rgba(34, 211, 238, 0.8) !important';
     });
     
     button.addEventListener('mouseleave', () => {
         button.style.transform = 'scale(1) !important';
-        button.style.boxShadow = '0 4px 20px rgba(102, 126, 234, 0.6) !important';
+        button.style.boxShadow = '0 4px 20px rgba(34, 211, 238, 0.6) !important';
     });
     
     // Add click handler - opens sidebar
     button.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log('🎯 Verdiqt: Button clicked - opening sidebar');
+        console.log('🎯 Social Pulse: Button clicked - opening sidebar');
         toggleSidebar();
     });
     
     // Add safeguard to prevent removal
-    button.setAttribute('data-verdiqt-main', 'true');
-    button.setAttribute('data-verdiqt-protected', 'true');
+    button.setAttribute('data-social-pulse-main', 'true');
+    button.setAttribute('data-social-pulse-protected', 'true');
     
     // Monitor for style changes that might hide the button
     const styleObserver = new MutationObserver((mutations) => {
@@ -95,24 +95,24 @@ function createVerdiqtButton() {
 
 // Toggle sidebar
 async function toggleSidebar() {
-    console.log('🔄 Verdiqt: Toggling sidebar');
+    console.log('🔄 Social Pulse: Toggling sidebar');
     
-    let sidebar = document.getElementById('verdiqt-sidebar');
+    let sidebar = document.getElementById('social-pulse-sidebar');
     
     if (!sidebar) {
-        console.log('📋 Verdiqt: Creating sidebar...');
+        console.log('📋 Social Pulse: Creating sidebar...');
         await createSidebar();
-        sidebar = document.getElementById('verdiqt-sidebar');
+        sidebar = document.getElementById('social-pulse-sidebar');
     }
     
     if (sidebar) {
         const isVisible = sidebar.classList.contains('visible');
         if (isVisible) {
             sidebar.classList.remove('visible');
-            console.log('🙈 Verdiqt: Sidebar hidden');
+            console.log('🙈 Social Pulse: Sidebar hidden');
         } else {
             sidebar.classList.add('visible');
-            console.log('👁️ Verdiqt: Sidebar shown');
+            console.log('👁️ Social Pulse: Sidebar shown');
             
             // Start analysis when sidebar opens
             if (!analysisInProgress) {
@@ -130,10 +130,10 @@ async function createSidebar() {
         
         // Create sidebar HTML
         const sidebar = document.createElement('div');
-        sidebar.id = 'verdiqt-sidebar';
+        sidebar.id = 'social-pulse-sidebar';
         sidebar.innerHTML = `
             <div class="sidebar-header">
-                <h2>Verdiqt</h2>
+                <h2>socialPulse</h2>
                 <button id="close-sidebar" class="close-btn">×</button>
             </div>
             
@@ -160,7 +160,7 @@ async function createSidebar() {
                     </div>
                     
                     <div class="analysis-summary">
-                        <div style="text-align: center; padding: 15px; color: #CBD5E0; background: rgba(102, 126, 234, 0.1); border-radius: 8px; margin-bottom: 15px;">
+                        <div style="text-align: center; padding: 15px; color: #CBD5E0; background: rgba(34, 211, 238, 0.1); border-radius: 8px; margin-bottom: 15px;">
                             <p style="margin: 0; font-size: 14px;">✅ Analysis Complete!</p>
                             <p id="analysis-label" style="margin: 5px 0 0 0; font-size: 12px; opacity: 0.8;">Check the colored badges next to each review</p>
                         </div>
@@ -174,7 +174,7 @@ async function createSidebar() {
                             <h3 style="color: #F56565; margin: 0 0 10px 0; font-size: 16px;">Analysis Failed</h3>
                             <p id="error-text" style="color: #CBD5E0; font-size: 14px; line-height: 1.4; white-space: pre-line; margin: 0;">Could not connect to backend.</p>
                             <button id="retry-analysis" style="
-                                background: #667EEA; 
+                                background: #22D3EE; 
                                 color: white; 
                                 border: none; 
                                 padding: 8px 16px; 
@@ -207,87 +207,109 @@ async function createSidebar() {
         
         // Add retry button handler
         document.getElementById('retry-analysis').addEventListener('click', () => {
-            console.log('🔄 Verdiqt: Retrying analysis...');
+            console.log('🔄 Social Pulse: Retrying analysis...');
             startAnalysis();
         });
         
-        console.log('✅ Verdiqt: Sidebar created');
+        console.log('✅ Social Pulse: Sidebar created');
         
     } catch (error) {
-        console.error('❌ Verdiqt: Error creating sidebar:', error);
+        console.error('❌ Social Pulse: Error creating sidebar:', error);
     }
 }
 
 // Inject sidebar CSS
 async function injectSidebarCSS() {
-    if (document.getElementById('verdiqt-styles')) return;
+    if (document.getElementById('social-pulse-styles')) return;
     
     const style = document.createElement('style');
-    style.id = 'verdiqt-styles';
+    style.id = 'social-pulse-styles';
     style.textContent = `
-        #verdiqt-sidebar {
+        #social-pulse-sidebar {
             position: fixed !important;
             top: 0 !important;
             right: 0 !important;
-            width: 380px !important;
+            width: min(400px, 100vw) !important;
             height: 100vh !important;
-            background: #0F0F1A !important;
+            background: linear-gradient(160deg, #0B1220 0%, #101A2D 55%, #111827 100%) !important;
             color: #E2E8F0 !important;
-            border-left: 1px solid #2D3748 !important;
+            border-left: 1px solid rgba(148, 163, 184, 0.18) !important;
             z-index: 999999 !important;
             display: flex !important;
             flex-direction: column !important;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
             transform: translateX(100%) !important;
             transition: transform 0.3s ease-in-out !important;
-            box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: -18px 0 50px rgba(2, 6, 23, 0.45) !important;
+            overflow: hidden !important;
         }
-        #verdiqt-sidebar.visible {
+        #social-pulse-sidebar.visible {
             transform: translateX(0) !important;
         }
         .sidebar-header {
             display: flex !important;
             justify-content: space-between !important;
             align-items: center !important;
-            padding: 20px !important;
-            border-bottom: 1px solid #2D3748 !important;
+            padding: 20px 22px !important;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.14) !important;
+            background: linear-gradient(110deg, rgba(34, 211, 238, 0.08), rgba(99, 102, 241, 0.08)) !important;
             flex-shrink: 0 !important;
         }
         .sidebar-header h2 {
+            display: flex !important;
+            align-items: center !important;
             margin: 0 !important;
-            color: #E2E8F0 !important;
-            font-size: 24px !important;
-            font-weight: 600 !important;
+            color: #F1F5F9 !important;
+            font-size: 20px !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.5px !important;
+        }
+        .sidebar-header h2::before {
+            content: "SP" !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 34px !important;
+            height: 34px !important;
+            margin-right: 11px !important;
+            border-radius: 11px !important;
+            color: #07111F !important;
+            background: linear-gradient(135deg, #67E8F9, #818CF8 72%, #C084FC) !important;
+            box-shadow: 0 6px 18px rgba(34, 211, 238, 0.2) !important;
+            font-size: 11px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0 !important;
         }
         .close-btn {
             background: none !important;
             border: none !important;
-            color: #E2E8F0 !important;
+            color: #A8B5C9 !important;
             font-size: 24px !important;
             cursor: pointer !important;
-            padding: 5px !important;
-            border-radius: 4px !important;
+            padding: 5px 9px !important;
+            border-radius: 9px !important;
+            transition: background-color 0.2s ease, color 0.2s ease !important;
+        }
+        .close-btn:hover {
+            color: #F8FAFC !important;
+            background: rgba(148, 163, 184, 0.14) !important;
         }
         .sidebar-content {
-            flex: 0 0 auto !important;
+            flex: 1 1 auto !important;
+            min-height: 0 !important;
             padding: 0 !important;
             overflow-y: auto !important;
         }
         .sidebar-footer {
-            flex: 1 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: flex-end !important;
-            min-height: 200px !important;
+            flex: 0 0 auto !important;
+            padding: 0 !important;
+            min-height: 0 !important;
         }
         .additional-content {
-            flex: 1 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: flex-end !important;
+            flex: 0 0 auto !important;
         }
         .section {
-            padding: 20px !important;
+            padding: 22px !important;
         }
         .hidden {
             display: none !important;
@@ -296,7 +318,7 @@ async function injectSidebarCSS() {
             width: 40px !important;
             height: 40px !important;
             border: 4px solid #2D3748 !important;
-            border-top: 4px solid #667EEA !important;
+            border-top: 4px solid #22D3EE !important;
             border-radius: 50% !important;
             animation: spin 1s linear infinite !important;
             margin: 0 auto 15px !important;
@@ -311,69 +333,112 @@ async function injectSidebarCSS() {
             flex-direction: column !important;
             justify-content: center !important;
             align-items: center !important;
+            min-height: 220px !important;
+            color: #AAB8CC !important;
+        }
+        #social-pulse-sidebar #loading-section.hidden {
+            display: none !important;
         }
         .stats-container {
             display: flex !important;
-            gap: 10px !important;
-            margin-bottom: 15px !important;
+            gap: 9px !important;
+            margin-bottom: 18px !important;
         }
         .stat-box {
             flex: 1 !important;
-            padding: 15px !important;
-            border-radius: 8px !important;
+            min-width: 0 !important;
+            padding: 16px 10px !important;
+            border-radius: 15px !important;
             text-align: center !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 8px 20px rgba(2, 6, 23, 0.12) !important;
         }
         .stat-box.positive {
-            background-color: rgba(34, 197, 94, 0.2) !important;
-            border: 1px solid #22C55E !important;
+            background: linear-gradient(145deg, rgba(34, 197, 94, 0.16), rgba(16, 185, 129, 0.07)) !important;
+            border: 1px solid rgba(74, 222, 128, 0.3) !important;
         }
         .stat-box.negative {
-            background-color: rgba(239, 68, 68, 0.2) !important;
-            border: 1px solid #EF4444 !important;
+            background: linear-gradient(145deg, rgba(239, 68, 68, 0.16), rgba(244, 63, 94, 0.07)) !important;
+            border: 1px solid rgba(251, 113, 133, 0.3) !important;
         }
         .stat-box.neutral {
-            background-color: rgba(245, 158, 11, 0.2) !important;
-            border: 1px solid #F59E0B !important;
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.16), rgba(234, 179, 8, 0.07)) !important;
+            border: 1px solid rgba(251, 191, 36, 0.3) !important;
         }
         .stat-number {
-            font-size: 20px !important;
-            font-weight: 600 !important;
-            margin-bottom: 5px !important;
+            font-size: 23px !important;
+            font-weight: 750 !important;
+            margin-bottom: 6px !important;
+            letter-spacing: -0.7px !important;
         }
         .stat-label {
-            font-size: 12px !important;
-            opacity: 0.8 !important;
+            color: #AAB8CC !important;
+            font-size: 10px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.75px !important;
+            opacity: 1 !important;
+            text-transform: uppercase !important;
         }
         .analysis-summary {
-            margin-bottom: 10px !important;
+            margin-bottom: 0 !important;
+        }
+        .analysis-summary > div {
+            padding: 18px !important;
+            color: #C6D2E3 !important;
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.92), rgba(17, 29, 48, 0.9)) !important;
+            border: 1px solid rgba(148, 163, 184, 0.16) !important;
+            border-radius: 15px !important;
+            margin-bottom: 0 !important;
+            text-align: left !important;
+            box-shadow: 0 10px 24px rgba(2, 6, 23, 0.16) !important;
+        }
+        .analysis-summary > div p:first-child {
+            color: #67E8F9 !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+        }
+        .analysis-summary > div p:last-child {
+            color: #AAB8CC !important;
+            font-size: 12px !important;
+            line-height: 1.5 !important;
         }
         .error-message {
             text-align: center !important;
-            color: #EF4444 !important;
-            background: rgba(239, 68, 68, 0.1) !important;
-            border: 1px solid #EF4444 !important;
-            border-radius: 8px !important;
+            color: #FCA5A5 !important;
+            background: rgba(127, 29, 29, 0.2) !important;
+            border: 1px solid rgba(248, 113, 113, 0.28) !important;
+            border-radius: 14px !important;
             padding: 20px !important;
         }
-        .verdiqt-badge {
-            display: inline-block !important;
+        #social-pulse-sidebar #additional-features > div {
+            margin: 0 22px 18px !important;
+            padding: 13px !important;
+            color: #8190A8 !important;
+            background: rgba(30, 41, 59, 0.52) !important;
+            border: 1px solid rgba(148, 163, 184, 0.13) !important;
+            border-radius: 12px !important;
+            font-size: 11px !important;
+        }
+        .social-pulse-badge {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
             margin: 8px 0 4px 0 !important;
-            padding: 8px 14px !important;
-            border-radius: 20px !important;
-            font-size: 13px !important;
+            padding: 7px 11px !important;
+            border-radius: 999px !important;
+            font-size: 12px !important;
             font-weight: 700 !important;
-            color: white !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3) !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.25) !important;
+            color: #14532D !important;
+            text-shadow: none !important;
+            box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12) !important;
             z-index: 1000 !important;
             position: relative !important;
             width: fit-content !important;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-            border: 2px solid rgba(255,255,255,0.2) !important;
+            border: 1px solid #86EFAC !important;
             text-align: center !important;
             line-height: 1.2 !important;
-            letter-spacing: 0.3px !important;
-            min-width: 120px !important;
+            letter-spacing: 0.1px !important;
+            min-width: 0 !important;
         }
     `;
     document.head.appendChild(style);
@@ -385,15 +450,15 @@ function waitForReviews(selector, timeout = 8000) {
         // Check immediately first
         const existing = document.querySelectorAll(selector);
         if (existing.length > 0) {
-            console.log(`✅ Verdiqt: Found ${existing.length} review elements immediately`);
+            console.log(`✅ Social Pulse: Found ${existing.length} review elements immediately`);
             return resolve(true);
         }
 
-        console.log(`⏳ Verdiqt: Waiting for "${selector}" to appear in DOM...`);
+        console.log(`⏳ Social Pulse: Waiting for "${selector}" to appear in DOM...`);
         const observer = new MutationObserver(() => {
             const found = document.querySelectorAll(selector);
             if (found.length > 0) {
-                console.log(`✅ Verdiqt: Review elements appeared (${found.length} found)`);
+                console.log(`✅ Social Pulse: Review elements appeared (${found.length} found)`);
                 observer.disconnect();
                 resolve(true);
             }
@@ -403,7 +468,7 @@ function waitForReviews(selector, timeout = 8000) {
         // Resolve anyway after timeout so analysis still runs
         setTimeout(() => {
             observer.disconnect();
-            console.log(`⏰ Verdiqt: Timeout waiting for reviews — proceeding anyway`);
+            console.log(`⏰ Social Pulse: Timeout waiting for reviews — proceeding anyway`);
             resolve(false);
         }, timeout);
     });
@@ -415,11 +480,11 @@ async function startAnalysis(isReanalysis = false) {
     
     analysisInProgress = true;
     const analysisType = isReanalysis ? 'Re-analysis' : 'Analysis';
-    console.log(`🔍 Verdiqt: Starting ${analysisType.toLowerCase()}...`);
+    console.log(`🔍 Social Pulse: Starting ${analysisType.toLowerCase()}...`);
     
     // Force fresh analysis if this is a manual trigger (not re-analysis)
     if (!isReanalysis) {
-        console.log('🔄 Verdiqt: Forcing fresh analysis - resetting review count');
+        console.log('🔄 Social Pulse: Forcing fresh analysis - resetting review count');
         lastAnalyzedReviewCount = 0;
     }
     
@@ -430,7 +495,7 @@ async function startAnalysis(isReanalysis = false) {
         // Add a timeout for the entire analysis process
         const analysisTimeout = setTimeout(() => {
             if (analysisInProgress) {
-                console.error(`❌ Verdiqt: ${analysisType} timeout after 20 seconds`);
+                console.error(`❌ Social Pulse: ${analysisType} timeout after 20 seconds`);
                 showError(`${analysisType} timed out. Please try again or check if backend is running.`);
                 analysisInProgress = false;
             }
@@ -438,14 +503,14 @@ async function startAnalysis(isReanalysis = false) {
 
         // For Amazon: wait for review elements to be in the DOM before scraping
         if (window.location.hostname.includes('amazon')) {
-            console.log('🛒 Verdiqt: Amazon detected — waiting for review elements...');
+            console.log('🛒 Social Pulse: Amazon detected — waiting for review elements...');
             await waitForReviews('[data-hook="review-body"]', 6000);
         }
 
         // Scrape reviews
-        console.log(`🔍 Verdiqt: Scraping reviews for ${analysisType.toLowerCase()}...`);
+        console.log(`🔍 Social Pulse: Scraping reviews for ${analysisType.toLowerCase()}...`);
         const reviews = scrapeReviews();
-        console.log(`📝 Verdiqt: Found ${reviews.length} reviews`);
+        console.log(`📝 Social Pulse: Found ${reviews.length} reviews`);
         
         // Update the last analyzed count
         lastAnalyzedReviewCount = reviews.length;
@@ -457,7 +522,7 @@ async function startAnalysis(isReanalysis = false) {
         }
         
         // Analyze with backend
-        console.log('🔗 Verdiqt: Sending to backend for analysis...');
+        console.log('🔗 Social Pulse: Sending to backend for analysis...');
         console.log('📤 Reviews being sent:', reviews.map((r, i) => `${i+1}: "${r.substring(0, 100)}..."`));
         
         const results = await analyzeWithBackend(reviews);
@@ -493,12 +558,12 @@ async function startAnalysis(isReanalysis = false) {
         displayResults(results);
         showSection('results');
         
-        console.log('📊 Verdiqt: Results displayed in sidebar');
+        console.log('📊 Social Pulse: Results displayed in sidebar');
         
         // Inject badges on page
         injectBadges(results.reviews);
         
-        console.log(`✅ Verdiqt: ${analysisType} complete - loading should be hidden now`);
+        console.log(`✅ Social Pulse: ${analysisType} complete - loading should be hidden now`);
         
         // If this is a re-analysis, show a brief notification
         if (isReanalysis) {
@@ -506,7 +571,7 @@ async function startAnalysis(isReanalysis = false) {
         }
         
     } catch (error) {
-        console.error(`❌ Verdiqt: ${analysisType} failed:`, error);
+        console.error(`❌ Social Pulse: ${analysisType} failed:`, error);
         showError(error.message || `${analysisType} failed. Please try again.`);
     } finally {
         analysisInProgress = false;
@@ -529,7 +594,7 @@ function showReanalysisNotification(reviewCount) {
         font-size: 14px !important;
         font-weight: 600 !important;
         z-index: 999999 !important;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+        box-shadow: 0 8px 25px rgba(34, 211, 238, 0.4) !important;
         animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         backdrop-filter: blur(10px) !important;
     `;
@@ -559,11 +624,11 @@ function scrapeReviews() {
     const reviews = [];       // array of text strings sent to backend
     const reviewElements = []; // parallel array of DOM element references for badge injection
     const currentDomain = window.location.hostname;
-    console.log(`🔍 Verdiqt: Scraping reviews on ${currentDomain}`);
+    console.log(`🔍 Social Pulse: Scraping reviews on ${currentDomain}`);
     
     // For Flipkart, try to navigate to reviews section first
     if (currentDomain.includes('flipkart')) {
-        console.log('🛒 Verdiqt: Looking for reviews section on Flipkart...');
+        console.log('🛒 Social Pulse: Looking for reviews section on Flipkart...');
         
         // Try to find and click on reviews tab/section
         const reviewsTab = document.querySelector('[data-testid="reviews-tab"], .reviews-tab, a[href*="review"], button[data-testid="reviews"]');
@@ -586,7 +651,7 @@ function scrapeReviews() {
     
     // Website-specific selectors
     if (currentDomain.includes('amazon')) {
-        console.log('🛒 Verdiqt: Using Amazon selectors');
+        console.log('🛒 Social Pulse: Using Amazon selectors');
         selectors = [
             // Primary: data-hook review body (most reliable across amazon.com / amazon.in)
             '[data-hook="review-body"] span',
@@ -608,7 +673,7 @@ function scrapeReviews() {
             '[class*="reviewBody"]'
         ];
     } else if (currentDomain.includes('flipkart')) {
-        console.log('🛒 Verdiqt: Using Flipkart selectors');
+        console.log('🛒 Social Pulse: Using Flipkart selectors');
         
         // First, try to scroll to reviews section if it exists
         const reviewsSection = document.querySelector('[data-testid="reviews-section"], .reviews-section, #reviews, .review-section');
@@ -651,13 +716,13 @@ function scrapeReviews() {
             'p:not([class*="footer"]):not([class*="legal"]):not([class*="company"]):not([class*="address"]):not([class*="contact"])'
         ];
     } else if (currentDomain.includes('linkedin.com')) {
-        console.log('💼 Verdiqt: Using LinkedIn selectors');
+        console.log('💼 Social Pulse: Using LinkedIn selectors');
         selectors = [
             // LinkedIn uses <p> tags for post content (confirmed via DOM inspection)
             'p',
         ];
     } else if (currentDomain.includes('facebook.com')) {
-        console.log('📘 Verdiqt: Using Facebook selectors');
+        console.log('📘 Social Pulse: Using Facebook selectors');
         selectors = [
             '[data-ad-comet-preview="message"]',
             '[data-testid="post_message"]',
@@ -667,7 +732,7 @@ function scrapeReviews() {
             '[role="article"] ul div[dir="auto"]',
         ];
     } else if (currentDomain.includes('instagram.com')) {
-        console.log('📸 Verdiqt: Using Instagram selectors');
+        console.log('📸 Social Pulse: Using Instagram selectors');
         selectors = [
             'article header ~ div span',
             'h1._aap8',
@@ -678,7 +743,7 @@ function scrapeReviews() {
             'article span[dir="auto"]',
         ];
     } else {
-        console.log('🌐 Verdiqt: Using universal selectors');
+        console.log('🌐 Social Pulse: Using universal selectors');
         selectors = [
             // Explicit review/comment class names (highest priority)
             '[class*="review-text"]', '[class*="review-body"]', '[class*="review-content"]',
@@ -779,11 +844,11 @@ function scrapeReviews() {
     
     // If no reviews found, try a more general approach
     if (reviews.length === 0) {
-        console.log('🔍 Verdiqt: No reviews found with specific selectors, trying general approach...');
+        console.log('🔍 Social Pulse: No reviews found with specific selectors, trying general approach...');
         
         // For Flipkart, try more aggressive general selectors
         if (currentDomain.includes('flipkart')) {
-            console.log('🛒 Verdiqt: Trying Flipkart aggressive approach...');
+            console.log('🛒 Social Pulse: Trying Flipkart aggressive approach...');
             
             // Try to find any text that looks like a review
             const allTextElements = document.querySelectorAll('p, div, span');
@@ -823,7 +888,7 @@ function scrapeReviews() {
         
         // If still no reviews, try the most general approach with sentiment keyword filtering
         if (reviews.length === 0) {
-            console.log('🔍 Verdiqt: Trying most general approach with sentiment filtering...');
+            console.log('🔍 Social Pulse: Trying most general approach with sentiment filtering...');
             const SENTIMENT_KEYWORDS = /\b(good|bad|nice|excellent|poor|quality|recommend|buy|purchase|delivery|service|satisfied|disappointed|happy|unhappy|love|hate|amazing|terrible|awesome|worst|best|okay|fine|great|horrible|fantastic|awful|perfect|defective|broken|working|worth|waste|impressive|useless|helpful|unhelpful|reliable|unreliable|fast|slow|easy|difficult|comfortable|uncomfortable|beautiful|ugly|clean|dirty|fresh|stale|delicious|disgusting|friendly|rude|professional|unprofessional|efficient|inefficient|affordable|expensive|cheap|overpriced|genuine|fake|original|duplicate|durable|fragile|lightweight|heavy|smooth|rough|bright|dim|loud|quiet|safe|dangerous|accurate|inaccurate|responsive|unresponsive|innovative|outdated|stylish|ugly|compact|bulky|portable|heavy|waterproof|flimsy|sturdy|weak|powerful|weak|fast|laggy|clear|blurry|sharp|dull|vibrant|faded|crisp|muffled|loud|silent)\b/i;
             
             const generalElements = document.querySelectorAll('p');
@@ -850,13 +915,13 @@ function scrapeReviews() {
         }
     }
     
-    console.log(`📝 Verdiqt: Final result - ${reviews.length} reviews found`);
+    console.log(`📝 Social Pulse: Final result - ${reviews.length} reviews found`);
     if (reviews.length > 0) {
         console.log('📄 Sample reviews:', reviews.slice(0, 2).map(r => r.substring(0, 100) + '...'));
     } else {
         // If no reviews found on Flipkart, create test reviews for debugging
         if (currentDomain.includes('flipkart')) {
-            console.log('🧪 Verdiqt: No reviews found on Flipkart, creating test reviews for debugging...');
+            console.log('🧪 Social Pulse: No reviews found on Flipkart, creating test reviews for debugging...');
             reviews.push(
                 "This product is really good quality and I am satisfied with the purchase",
                 "Bad quality product, not worth the money, very disappointed",
@@ -867,14 +932,14 @@ function scrapeReviews() {
     }
     
     // Store element references globally for badge injection
-    window._verdiqtReviewElements = reviewElements;
+    window._socialPulseReviewElements = reviewElements;
     
     return reviews;
 }
 
 // Analyze with backend
 async function analyzeWithBackend(reviews) {
-    console.log('🔗 Verdiqt: Connecting to backend...');
+    console.log('🔗 Social Pulse: Connecting to backend...');
     
     try {
         // Create AbortController for timeout
@@ -899,7 +964,7 @@ async function analyzeWithBackend(reviews) {
         }
         
         const result = await response.json();
-        console.log('✅ Verdiqt: Backend response received:', result);
+        console.log('✅ Social Pulse: Backend response received:', result);
         
         // Validate response structure
         if (!result || !result.reviews || !result.overall) {
@@ -909,12 +974,12 @@ async function analyzeWithBackend(reviews) {
         return result;
         
     } catch (error) {
-        console.error('❌ Verdiqt: Backend connection failed:', error);
+        console.error('❌ Social Pulse: Backend connection failed:', error);
         
         if (error.name === 'AbortError') {
-            throw new Error('Connection timeout (15s). Make sure backend is running:\ncd verdiqt/backend && uvicorn main:app --reload');
+            throw new Error('Connection timeout (15s). Make sure backend is running:\ncd socialPulse/backend && uvicorn main:app --reload');
         } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.message.includes('fetch')) {
-            throw new Error('Cannot connect to backend. Start it with:\ncd verdiqt/backend && uvicorn main:app --reload');
+            throw new Error('Cannot connect to backend. Start it with:\ncd socialPulse/backend && uvicorn main:app --reload');
         } else if (error.message.includes('Backend error:')) {
             throw new Error(error.message);
         } else {
@@ -925,7 +990,7 @@ async function analyzeWithBackend(reviews) {
 
 // Display results in sidebar
 function displayResults(data) {
-    console.log('📊 Verdiqt: Displaying results in sidebar:', data);
+    console.log('📊 Social Pulse: Displaying results in sidebar:', data);
     
     try {
         const positiveElement = document.getElementById('positive-percent');
@@ -967,10 +1032,10 @@ function displayResults(data) {
 
 // Inject badges on page
 function injectBadges(results) {
-    console.log('🏷️ Verdiqt: Injecting badges...');
+    console.log('🏷️ Social Pulse: Injecting badges...');
     
     // Remove existing badges
-    document.querySelectorAll('.verdiqt-badge').forEach(badge => badge.remove());
+    document.querySelectorAll('.social-pulse-badge').forEach(badge => badge.remove());
     
     const currentDomain = window.location.hostname;
     console.log(`🌐 Domain: ${currentDomain}`);
@@ -1001,14 +1066,14 @@ function injectFlipkartBadges(results) {
     console.log('🛒 Flipkart: Starting specialized badge injection...');
     
     // Remove existing containers
-    const existingContainer = document.getElementById('verdiqt-flipkart-badges');
-    const existingTrigger = document.getElementById('verdiqt-flipkart-trigger');
+    const existingContainer = document.getElementById('social-pulse-flipkart-badges');
+    const existingTrigger = document.getElementById('social-pulse-flipkart-trigger');
     if (existingContainer) existingContainer.remove();
     if (existingTrigger) existingTrigger.remove();
     
     // Create trigger button first
     const triggerButton = document.createElement('div');
-    triggerButton.id = 'verdiqt-flipkart-trigger';
+    triggerButton.id = 'social-pulse-flipkart-trigger';
     triggerButton.style.cssText = `
         position: fixed !important;
         top: 150px !important;
@@ -1024,16 +1089,16 @@ function injectFlipkartBadges(results) {
         cursor: pointer !important;
         z-index: 9999999 !important;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 8px 25px rgba(34, 211, 238, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
         backdrop-filter: blur(10px) !important;
         animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
     `;
     
     // Add animation keyframes if not exists
-    if (!document.getElementById('verdiqt-animations')) {
+    if (!document.getElementById('social-pulse-animations')) {
         const style = document.createElement('style');
-        style.id = 'verdiqt-animations';
+        style.id = 'social-pulse-animations';
         style.textContent = `
             @keyframes bounceIn {
                 0% { transform: scale(0.3); opacity: 0; }
@@ -1091,19 +1156,19 @@ function injectFlipkartBadges(results) {
     // Add hover effects to trigger
     triggerButton.addEventListener('mouseenter', () => {
         triggerButton.style.transform = 'scale(1.1)';
-        triggerButton.style.boxShadow = `0 12px 35px rgba(102, 126, 234, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2)`;
+        triggerButton.style.boxShadow = `0 12px 35px rgba(34, 211, 238, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2)`;
         triggerButton.style.animation = 'pulse 1s infinite';
     });
     
     triggerButton.addEventListener('mouseleave', () => {
         triggerButton.style.transform = 'scale(1)';
-        triggerButton.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';
+        triggerButton.style.boxShadow = '0 8px 25px rgba(34, 211, 238, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1)';
         triggerButton.style.animation = 'none';
     });
     
     // Create the badge container (initially hidden)
     const badgeContainer = document.createElement('div');
-    badgeContainer.id = 'verdiqt-flipkart-badges';
+    badgeContainer.id = 'social-pulse-flipkart-badges';
     badgeContainer.style.cssText = `
         position: fixed !important;
         top: 150px !important;
@@ -1112,7 +1177,7 @@ function injectFlipkartBadges(results) {
         max-height: 500px !important;
         overflow: hidden !important;
         background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%) !important;
-        border: 1px solid rgba(102, 126, 234, 0.3) !important;
+        border: 1px solid rgba(34, 211, 238, 0.3) !important;
         border-radius: 16px !important;
         padding: 0 !important;
         z-index: 999998 !important;
@@ -1137,7 +1202,7 @@ function injectFlipkartBadges(results) {
         text-align: center !important;
         position: relative !important;
         border-radius: 16px 16px 0 0 !important;
-        box-shadow: 0 2px 10px rgba(102, 126, 234, 0.2) !important;
+        box-shadow: 0 2px 10px rgba(34, 211, 238, 0.2) !important;
     `;
     
     header.innerHTML = `
@@ -1162,13 +1227,13 @@ function injectFlipkartBadges(results) {
         overflow-y: auto !important;
         padding: 16px !important;
         scrollbar-width: thin !important;
-        scrollbar-color: rgba(102, 126, 234, 0.5) transparent !important;
+        scrollbar-color: rgba(34, 211, 238, 0.5) transparent !important;
     `;
     
     // Add badges for each result with staggered animation
     results.forEach((result, index) => {
         const badge = document.createElement('div');
-        badge.className = 'verdiqt-flipkart-badge';
+        badge.className = 'social-pulse-flipkart-badge';
         
         // Colors with better gradients
         let bgGradient, borderColor, textColor, iconBg;
@@ -1296,7 +1361,7 @@ function injectFlipkartBadges(results) {
             console.log('🔄 Badge panel expanded');
             
             // Animate badges in
-            const badges = contentArea.querySelectorAll('.verdiqt-flipkart-badge');
+            const badges = contentArea.querySelectorAll('.social-pulse-flipkart-badge');
             badges.forEach((badge, index) => {
                 badge.style.animation = `fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s both`;
             });
@@ -1336,14 +1401,14 @@ function injectFlipkartBadges(results) {
 // Social media badge injection (LinkedIn, Facebook, Instagram)
 function injectSocialMediaBadges(results) {
     console.log(`🏷️ Social: Injecting ${results.length} badges using element references...`);
-    const elements = window._verdiqtReviewElements || [];
+    const elements = window._socialPulseReviewElements || [];
 
     results.forEach((result, index) => {
         const targetEl = elements[index];
         if (!targetEl) return;
 
         // Skip if badge already injected on this element
-        if (targetEl.nextSibling && targetEl.nextSibling.classList && targetEl.nextSibling.classList.contains('verdiqt-badge')) return;
+        if (targetEl.nextSibling && targetEl.nextSibling.classList && targetEl.nextSibling.classList.contains('social-pulse-badge')) return;
 
         const badge = createInlineBadge(result, index);
         try {
@@ -1412,44 +1477,49 @@ function injectUniversalBadges(results) {
 // Create inline badge (for Amazon and Universal)
 function createInlineBadge(result, index) {
     const badge = document.createElement('div');
-    badge.className = 'verdiqt-badge';
-    badge.setAttribute('data-verdiqt-index', index);
+    badge.className = 'social-pulse-badge';
+    badge.setAttribute('data-social-pulse-index', index);
     
     // Colors
-    let bgColor, borderColor;
+    let bgColor, textColor, borderColor;
     if (result.sentiment === 'positive') {
-        bgColor = '#16A34A';
-        borderColor = '#22C55E';
+        bgColor = 'linear-gradient(135deg, #F0FDF4, #DCFCE7)';
+        textColor = '#166534';
+        borderColor = '#86EFAC';
     } else if (result.sentiment === 'negative') {
-        bgColor = '#DC2626';
-        borderColor = '#EF4444';
+        bgColor = 'linear-gradient(135deg, #FFF1F2, #FFE4E6)';
+        textColor = '#9F1239';
+        borderColor = '#FDA4AF';
     } else {
-        bgColor = '#D97706';
-        borderColor = '#F59E0B';
+        bgColor = 'linear-gradient(135deg, #FFFBEB, #FEF3C7)';
+        textColor = '#92400E';
+        borderColor = '#FCD34D';
     }
     
     badge.style.cssText = `
-        display: inline-block !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
         margin: 0 0 0 10px !important;
-        padding: 6px 12px !important;
-        border-radius: 20px !important;
+        padding: 6px 11px !important;
+        border-radius: 999px !important;
         font-size: 12px !important;
         font-weight: 700 !important;
-        color: white !important;
+        color: ${textColor} !important;
         background: ${bgColor} !important;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+        text-shadow: none !important;
+        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.12) !important;
         z-index: 999999 !important;
         position: relative !important;
         width: fit-content !important;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-        border: 2px solid ${borderColor} !important;
+        border: 1px solid ${borderColor} !important;
         text-align: center !important;
         line-height: 1.2 !important;
-        letter-spacing: 0.3px !important;
+        letter-spacing: 0.1px !important;
         opacity: 1 !important;
         visibility: visible !important;
-        vertical-align: top !important;
+        vertical-align: middle !important;
         white-space: nowrap !important;
     `;
     
@@ -1459,14 +1529,14 @@ function createInlineBadge(result, index) {
     const text = result.sentiment.charAt(0).toUpperCase() + result.sentiment.slice(1);
     const confidence = Math.round(result.confidence || 0);
     
-    badge.innerHTML = `<span style="color: white !important; text-shadow: 0 1px 2px rgba(0,0,0,0.7) !important; font-weight: 700 !important;">${icon} ${text} (${confidence}%)</span>`;
+    badge.textContent = `${icon} ${text} · ${confidence}%`;
     
     return badge;
 }
 
 // Show section
 function showSection(sectionName) {
-    console.log(`🔄 Verdiqt: Switching to section: ${sectionName}`);
+    console.log(`🔄 Social Pulse: Switching to section: ${sectionName}`);
     
     const sections = document.querySelectorAll('.section');
     if (sections.length === 0) {
@@ -1494,7 +1564,7 @@ function showError(message) {
 
 // Setup dynamic content detection for lazy-loaded reviews
 function setupDynamicContentDetection() {
-    console.log('🔍 Verdiqt: Setting up dynamic content detection for Flipkart...');
+    console.log('🔍 Social Pulse: Setting up dynamic content detection for Flipkart...');
     
     // Method 1: Enhanced Mutation Observer
     if (contentObserver) {
@@ -1523,7 +1593,7 @@ function setupDynamicContentDetection() {
                                 if (node.className.includes(className)) {
                                     newContentDetected = true;
                                     addedReviewElements++;
-                                    console.log(`🆕 Verdiqt: New review element detected: ${node.className}`);
+                                    console.log(`🆕 Social Pulse: New review element detected: ${node.className}`);
                                     break;
                                 }
                             }
@@ -1536,7 +1606,7 @@ function setupDynamicContentDetection() {
                                 if (foundElements.length > 0) {
                                     newContentDetected = true;
                                     addedReviewElements += foundElements.length;
-                                    console.log(`🆕 Verdiqt: Found ${foundElements.length} new review elements with selector: ${selector}`);
+                                    console.log(`🆕 Social Pulse: Found ${foundElements.length} new review elements with selector: ${selector}`);
                                     break;
                                 }
                             }
@@ -1547,7 +1617,7 @@ function setupDynamicContentDetection() {
         });
         
         if (newContentDetected) {
-            console.log(`🆕 Verdiqt: Total new review elements detected: ${addedReviewElements}`);
+            console.log(`🆕 Social Pulse: Total new review elements detected: ${addedReviewElements}`);
             scheduleReanalysis('mutation');
         }
     });
@@ -1575,7 +1645,7 @@ function setupDynamicContentDetection() {
             lastScrollY = currentScrollY;
             scrollCheckCount++;
             
-            console.log(`📜 Verdiqt: Scroll detected #${scrollCheckCount} (${scrollDelta}px delta, position: ${currentScrollY})`);
+            console.log(`📜 Social Pulse: Scroll detected #${scrollCheckCount} (${scrollDelta}px delta, position: ${currentScrollY})`);
             
             // Clear existing timeout
             if (scrollCheckTimeout) {
@@ -1584,7 +1654,7 @@ function setupDynamicContentDetection() {
             
             // Check immediately for new content (reduced delay)
             scrollCheckTimeout = setTimeout(() => {
-                console.log('📜 Verdiqt: Scroll check triggered, looking for new reviews...');
+                console.log('📜 Social Pulse: Scroll check triggered, looking for new reviews...');
                 checkForNewReviews('scroll');
             }, 1500); // Reduced from 3000ms to 1500ms
         }
@@ -1596,7 +1666,7 @@ function setupDynamicContentDetection() {
     const bottomObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                console.log('👁️ Verdiqt: Bottom of page visible, checking for new content...');
+                console.log('👁️ Social Pulse: Bottom of page visible, checking for new content...');
                 setTimeout(() => checkForNewReviews('intersection'), 2000);
             }
         });
@@ -1604,7 +1674,7 @@ function setupDynamicContentDetection() {
     
     // Create a sentinel element at the bottom
     const sentinel = document.createElement('div');
-    sentinel.id = 'verdiqt-scroll-sentinel';
+    sentinel.id = 'social-pulse-scroll-sentinel';
     sentinel.style.cssText = 'height: 1px; position: absolute; bottom: 0; width: 100%;';
     document.body.appendChild(sentinel);
     bottomObserver.observe(sentinel);
@@ -1614,7 +1684,7 @@ function setupDynamicContentDetection() {
     const periodicCheck = setInterval(() => {
         if (!analysisInProgress) {
             periodicCheckCount++;
-            console.log(`⏰ Verdiqt: Periodic check #${periodicCheckCount}`);
+            console.log(`⏰ Social Pulse: Periodic check #${periodicCheckCount}`);
             checkForNewReviews('periodic');
         }
     }, 8000); // Check every 8 seconds (reduced from 10)
@@ -1627,24 +1697,24 @@ function setupDynamicContentDetection() {
     }, 5000);
     
     // Store cleanup function
-    window.verdiqtCleanup = () => {
+    window.socialPulseCleanup = () => {
         if (contentObserver) contentObserver.disconnect();
         if (bottomObserver) bottomObserver.disconnect();
         if (periodicCheck) clearInterval(periodicCheck);
         window.removeEventListener('scroll', handleScroll);
-        const sentinel = document.getElementById('verdiqt-scroll-sentinel');
+        const sentinel = document.getElementById('social-pulse-scroll-sentinel');
         if (sentinel) sentinel.remove();
-        const debugBtn = document.getElementById('verdiqt-debug-btn');
+        const debugBtn = document.getElementById('social-pulse-debug-btn');
         if (debugBtn) debugBtn.remove();
     };
     
-    console.log('✅ Verdiqt: Enhanced dynamic content detection setup complete');
+    console.log('✅ Social Pulse: Enhanced dynamic content detection setup complete');
 }
 
 // Create debug button for manual testing
 function createDebugButton() {
     const debugBtn = document.createElement('button');
-    debugBtn.id = 'verdiqt-debug-btn';
+    debugBtn.id = 'social-pulse-debug-btn';
     debugBtn.innerHTML = '🔧 Test';
     debugBtn.style.cssText = `
         position: fixed !important;
@@ -1674,17 +1744,17 @@ function createDebugButton() {
 // Check for new reviews and trigger re-analysis if needed
 function checkForNewReviews(trigger) {
     if (analysisInProgress) {
-        console.log('⏳ Verdiqt: Analysis in progress, skipping new review check');
+        console.log('⏳ Social Pulse: Analysis in progress, skipping new review check');
         return;
     }
     
-    console.log(`🔍 Verdiqt: Checking for new reviews (${trigger})...`);
+    console.log(`🔍 Social Pulse: Checking for new reviews (${trigger})...`);
     
     // Get current review count using the same scraping logic
     const currentReviews = scrapeReviews();
     const currentCount = currentReviews.length;
     
-    console.log(`📊 Verdiqt: Review count check - Current: ${currentCount}, Last analyzed: ${lastAnalyzedReviewCount}`);
+    console.log(`📊 Social Pulse: Review count check - Current: ${currentCount}, Last analyzed: ${lastAnalyzedReviewCount}`);
     
     // Log some sample reviews for debugging
     if (currentReviews.length > 0) {
@@ -1694,12 +1764,12 @@ function checkForNewReviews(trigger) {
     // If we found more reviews than before (with a buffer of 1 to avoid false positives)
     if (currentCount > lastAnalyzedReviewCount + 1) {
         const newReviewCount = currentCount - lastAnalyzedReviewCount;
-        console.log(`🆕 Verdiqt: Found ${newReviewCount} new reviews! Triggering re-analysis...`);
+        console.log(`🆕 Social Pulse: Found ${newReviewCount} new reviews! Triggering re-analysis...`);
         scheduleReanalysis(trigger);
     } else if (currentCount === lastAnalyzedReviewCount) {
-        console.log('📊 Verdiqt: No new reviews detected');
+        console.log('📊 Social Pulse: No new reviews detected');
     } else if (currentCount < lastAnalyzedReviewCount) {
-        console.log('📊 Verdiqt: Review count decreased, page might have changed');
+        console.log('📊 Social Pulse: Review count decreased, page might have changed');
         // Reset the count and potentially re-analyze
         lastAnalyzedReviewCount = 0;
         scheduleReanalysis(trigger);
@@ -1712,17 +1782,17 @@ function scheduleReanalysis(trigger) {
         clearTimeout(scrollAnalysisTimeout);
     }
     
-    console.log(`⏰ Verdiqt: Scheduling re-analysis (${trigger}) in 1.5 seconds...`);
+    console.log(`⏰ Social Pulse: Scheduling re-analysis (${trigger}) in 1.5 seconds...`);
     
     scrollAnalysisTimeout = setTimeout(() => {
-        console.log(`🔄 Verdiqt: Starting re-analysis triggered by: ${trigger}`);
+        console.log(`🔄 Social Pulse: Starting re-analysis triggered by: ${trigger}`);
         startAnalysis(true); // Pass true to indicate this is a re-analysis
     }, 1500); // Wait 1.5 seconds to avoid too frequent re-analysis
 }
 
 // Manual trigger for testing (can be called from console)
-window.verdiqtForceReanalysis = function() {
-    console.log('🔧 Verdiqt: Manual re-analysis triggered');
+window.socialPulseForceReanalysis = function() {
+    console.log('🔧 Social Pulse: Manual re-analysis triggered');
     if (analysisInProgress) {
         console.log('⏳ Analysis already in progress');
         return;
@@ -1731,20 +1801,20 @@ window.verdiqtForceReanalysis = function() {
 };
 
 // Manual trigger to check for new reviews (for debugging)
-window.verdiqtCheckReviews = function() {
-    console.log('🔧 Verdiqt: Manual review check triggered');
+window.socialPulseCheckReviews = function() {
+    console.log('🔧 Social Pulse: Manual review check triggered');
     checkForNewReviews('manual');
 };
 
 // Manual button creation for debugging
-window.verdiqtCreateButton = function() {
-    console.log('🔧 Verdiqt: Manual button creation triggered');
-    createMainVerdiqtButton();
+window.socialPulseCreateButton = function() {
+    console.log('🔧 Social Pulse: Manual button creation triggered');
+    createMainSocialPulseButton();
 };
 
 // Check if button exists
-window.verdiqtCheckButton = function() {
-    const btn = document.getElementById('verdiqt-float-btn');
+window.socialPulseCheckButton = function() {
+    const btn = document.getElementById('social-pulse-float-btn');
     if (btn) {
         const rect = btn.getBoundingClientRect();
         const isVisible = rect.width > 0 && rect.height > 0 && 
@@ -1760,24 +1830,24 @@ window.verdiqtCheckButton = function() {
 };
 
 // Initialize extension
-function initVerdiqt() {
-    console.log('🚀 Verdiqt: Initializing...');
+function initSocialPulse() {
+    console.log('🚀 Social Pulse: Initializing...');
     
     // Wait for body to be available
     if (!document.body) {
         console.log('⏳ Waiting for document.body...');
-        setTimeout(initVerdiqt, 100);
+        setTimeout(initSocialPulse, 100);
         return;
     }
     
     // Always create the main V button first with multiple attempts
-    createMainVerdiqtButton();
+    createMainSocialPulseButton();
     
     // Auto-analyze after 3 seconds
     setTimeout(() => {
-        console.log('🤖 Verdiqt: Starting auto-analysis...');
+        console.log('🤖 Social Pulse: Starting auto-analysis...');
         // Only auto-analyze if sidebar is already open
-        if (document.getElementById('verdiqt-sidebar')) {
+        if (document.getElementById('social-pulse-sidebar')) {
             startAnalysis();
         }
     }, 3000);
@@ -1809,7 +1879,7 @@ function detectAnalysisType() {
 // SPA navigation detection - re-triggers analysis when URL changes on social media
 function setupSPANavigationDetection() {
     let lastUrl = window.location.href;
-    console.log('🔗 Verdiqt: Setting up SPA navigation detection...');
+    console.log('🔗 Social Pulse: Setting up SPA navigation detection...');
 
     // Patch pushState and replaceState to detect client-side navigation
     const originalPushState = history.pushState.bind(history);
@@ -1830,43 +1900,43 @@ function setupSPANavigationDetection() {
         const currentUrl = window.location.href;
         if (currentUrl !== lastUrl) {
             lastUrl = currentUrl;
-            console.log('🔗 Verdiqt: SPA navigation detected, re-analyzing in 2s...');
+            console.log('🔗 Social Pulse: SPA navigation detected, re-analyzing in 2s...');
             // Remove old badges and reset
-            document.querySelectorAll('.verdiqt-badge').forEach(b => b.remove());
+            document.querySelectorAll('.social-pulse-badge').forEach(b => b.remove());
             lastAnalyzedReviewCount = 0;
             analysisInProgress = false;
-            window._verdiqtReviewElements = [];
+            window._socialPulseReviewElements = [];
             setTimeout(() => startAnalysis(), 2000);
         }
     }
 }
 
 // Create main V button with multiple attempts and safeguards
-function createMainVerdiqtButton() {
-    console.log('🔧 Verdiqt: Creating main V button...');
+function createMainSocialPulseButton() {
+    console.log('🔧 Social Pulse: Creating main V button...');
     
     // Ensure body exists
     if (!document.body) {
         console.log('⏳ Body not ready, retrying...');
-        setTimeout(createMainVerdiqtButton, 100);
+        setTimeout(createMainSocialPulseButton, 100);
         return;
     }
     
     // Remove any existing button first
-    const existing = document.getElementById('verdiqt-float-btn');
+    const existing = document.getElementById('social-pulse-float-btn');
     if (existing) {
         existing.remove();
         console.log('🗑️ Removed existing button');
     }
     
     try {
-        const button = createVerdiqtButton();
+        const button = createSocialPulseButton();
         document.body.appendChild(button);
-        console.log('✅ Verdiqt: Main V button created and added');
+        console.log('✅ Social Pulse: Main V button created and added');
         
         // Verify it's actually visible
         setTimeout(() => {
-            const check = document.getElementById('verdiqt-float-btn');
+            const check = document.getElementById('social-pulse-float-btn');
             if (check) {
                 const rect = check.getBoundingClientRect();
                 const isVisible = rect.width > 0 && rect.height > 0 && 
@@ -1883,23 +1953,23 @@ function createMainVerdiqtButton() {
                 }
             } else {
                 console.log('❌ Button not found in DOM, recreating...');
-                createMainVerdiqtButton();
+                createMainSocialPulseButton();
             }
         }, 1000);
         
         // Set up periodic check to ensure button stays visible
         setInterval(() => {
-            const btn = document.getElementById('verdiqt-float-btn');
+            const btn = document.getElementById('social-pulse-float-btn');
             if (!btn) {
                 console.log('🔄 Button disappeared, recreating...');
-                createMainVerdiqtButton();
+                createMainSocialPulseButton();
             }
         }, 5000); // Check every 5 seconds
         
     } catch (error) {
         console.error('❌ Error creating main button:', error);
         // Retry after a delay
-        setTimeout(createMainVerdiqtButton, 1000);
+        setTimeout(createMainSocialPulseButton, 1000);
     }
 }
 
@@ -1913,12 +1983,12 @@ function createEmergencyButton() {
     }
     
     // Remove existing if any
-    const existing = document.getElementById('verdiqt-float-btn');
+    const existing = document.getElementById('social-pulse-float-btn');
     if (existing) existing.remove();
     
     // Create simple button
     const btn = document.createElement('div');
-    btn.id = 'verdiqt-float-btn';
+    btn.id = 'social-pulse-float-btn';
     btn.textContent = 'V';
     btn.style.cssText = `
         position: fixed !important;
@@ -1926,7 +1996,7 @@ function createEmergencyButton() {
         right: 20px !important;
         width: 60px !important;
         height: 60px !important;
-        background: #667EEA !important;
+        background: #22D3EE !important;
         color: white !important;
         border-radius: 50% !important;
         display: flex !important;
@@ -1936,7 +2006,7 @@ function createEmergencyButton() {
         font-weight: bold !important;
         cursor: pointer !important;
         z-index: 99999999 !important;
-        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.6) !important;
+        box-shadow: 0 4px 20px rgba(34, 211, 238, 0.6) !important;
         font-family: Arial, sans-serif !important;
         user-select: none !important;
         pointer-events: auto !important;
@@ -1954,52 +2024,52 @@ function createEmergencyButton() {
 }
 
 // Start initialization with multiple strategies
-console.log('🎬 Verdiqt: Starting...');
+console.log('🎬 Social Pulse: Starting...');
 
 // Strategy 1: Immediate initialization
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    setTimeout(initVerdiqt, 100);
+    setTimeout(initSocialPulse, 100);
 } else {
     // Strategy 2: Wait for DOM content loaded
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initVerdiqt, 100);
+        setTimeout(initSocialPulse, 100);
     });
     
     // Strategy 3: Wait for full page load
     window.addEventListener('load', () => {
-        setTimeout(initVerdiqt, 200);
+        setTimeout(initSocialPulse, 200);
     });
 }
 
 // Strategy 4: Fallback initialization after delay
 setTimeout(() => {
-    if (!document.getElementById('verdiqt-float-btn')) {
+    if (!document.getElementById('social-pulse-float-btn')) {
         console.log('🔄 Fallback initialization...');
-        initVerdiqt();
+        initSocialPulse();
     }
 }, 2000);
 
 // Strategy 5: Emergency button creation as last resort
 setTimeout(() => {
-    if (!document.getElementById('verdiqt-float-btn')) {
+    if (!document.getElementById('social-pulse-float-btn')) {
         console.log('🚨 Creating emergency button as last resort...');
         createEmergencyButton();
     }
 }, 5000);
 
-console.log('✨ Verdiqt: Content script loaded');
+console.log('✨ Social Pulse: Content script loaded');
 
 // Global debug functions for console access
-window.verdiqtCreateButton = createEmergencyButton;
-window.verdiqtInit = initVerdiqt;
-window.verdiqtToggle = toggleSidebar;
-window.verdiqtForceAnalysis = () => {
+window.socialPulseCreateButton = createEmergencyButton;
+window.socialPulseInit = initSocialPulse;
+window.socialPulseToggle = toggleSidebar;
+window.socialPulseForceAnalysis = () => {
     console.log('🔄 Forcing fresh analysis...');
     lastAnalyzedReviewCount = 0;
     analysisInProgress = false;
     startAnalysis(false);
 };
-window.verdiqtDebugReviews = () => {
+window.socialPulseDebugReviews = () => {
     console.log('🔍 Debug: Looking for review text on page...');
     const potentialReviews = [];
     

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Verdiqt Setup Script
+Social Pulse Setup Script
 Installs all dependencies and tests the system
 """
 
@@ -136,7 +136,7 @@ uvicorn.run(app, host="127.0.0.1", port=8000, log_level="error")
 
 def main():
     """Main setup function"""
-    print("🎯 Verdiqt Setup Script")
+    print("🎯 Social Pulse Setup Script")
     print("=" * 50)
     
     # Check current directory

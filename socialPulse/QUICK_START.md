@@ -1,4 +1,4 @@
-# 🚀 Verdiqt Quick Start Guide
+# 🚀 Social Pulse Quick Start Guide
 
 ## Option 1: Automatic Setup (Recommended)
 
@@ -80,7 +80,7 @@ pip install --user fastapi uvicorn transformers torch langdetect
 ```
 
 ### Extension Not Working:
-1. **Reload extension**: chrome://extensions/ → reload Verdiqt
+1. **Reload extension**: chrome://extensions/ → reload Social Pulse
 2. **Refresh page**: Press F5 on the website
 3. **Check console**: F12 → Console tab for errors
 

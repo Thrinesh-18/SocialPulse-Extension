@@ -1,9 +1,9 @@
-// JavaScript for Verdiqt extension sidebar functionality
-console.log('Verdiqt sidebar loaded');
+// JavaScript for Social Pulse extension sidebar functionality
+console.log('Social Pulse sidebar loaded');
 
-class VerdiqtSidebar {
+class SocialPulseSidebar {
     constructor() {
-        console.log('Verdiqt: Initializing sidebar class...');
+        console.log('Social Pulse: Initializing sidebar class...');
         
         // Wait a bit for DOM to be ready
         setTimeout(() => {
@@ -12,19 +12,19 @@ class VerdiqtSidebar {
     }
 
     initialize() {
-        console.log('Verdiqt: Finding sidebar elements...');
+        console.log('Social Pulse: Finding sidebar elements...');
         
-        this.sidebar = document.getElementById('verdiqt-sidebar');
+        this.sidebar = document.getElementById('social-pulse-sidebar');
         this.loadingSection = document.getElementById('loading-section');
         this.resultsSection = document.getElementById('results-section');
         this.errorSection = document.getElementById('error-section');
         this.reviewsList = document.getElementById('reviews-list');
         
-        console.log('Verdiqt: Sidebar element:', !!this.sidebar);
-        console.log('Verdiqt: Loading section:', !!this.loadingSection);
+        console.log('Social Pulse: Sidebar element:', !!this.sidebar);
+        console.log('Social Pulse: Loading section:', !!this.loadingSection);
         
         if (!this.sidebar || !this.loadingSection) {
-            console.error('Verdiqt: Sidebar elements not found! Retrying...');
+            console.error('Social Pulse: Sidebar elements not found! Retrying...');
             setTimeout(() => this.initialize(), 200);
             return;
         }
@@ -33,12 +33,12 @@ class VerdiqtSidebar {
         this.setupMessageListener();
         
         // Start analysis automatically when sidebar opens
-        console.log('Verdiqt: Starting automatic analysis...');
+        console.log('Social Pulse: Starting automatic analysis...');
         this.loadAndAnalyze();
     }
 
     initEventListeners() {
-        console.log('Verdiqt: Setting up event listeners...');
+        console.log('Social Pulse: Setting up event listeners...');
         
         const closeBtn = document.getElementById('close-sidebar');
         const reanalyzeBtn = document.getElementById('reanalyze-btn');
@@ -57,12 +57,12 @@ class VerdiqtSidebar {
     }
 
     setupMessageListener() {
-        console.log('Verdiqt: Setting up message listener...');
+        console.log('Social Pulse: Setting up message listener...');
         
         // Listen for messages from content script
         window.addEventListener("message", (event) => {
-            if (event.data.source === "VERDIQT_CONTENT") {
-                console.log('Verdiqt: Received message from content:', event.data.action);
+            if (event.data.source === "SOCIAL_PULSE_CONTENT") {
+                console.log('Social Pulse: Received message from content:', event.data.action);
                 
                 if (event.data.action === "REVIEWS_DATA") {
                     this.handleReviewsData(event.data.reviews);
@@ -72,7 +72,7 @@ class VerdiqtSidebar {
     }
 
     showSection(sectionName) {
-        console.log('Verdiqt: Showing section:', sectionName);
+        console.log('Social Pulse: Showing section:', sectionName);
         
         // Hide all sections
         if (this.loadingSection) this.loadingSection.classList.add('hidden');
@@ -94,33 +94,33 @@ class VerdiqtSidebar {
     }
 
     async loadAndAnalyze() {
-        console.log('Verdiqt: Starting analysis...');
+        console.log('Social Pulse: Starting analysis...');
         this.showSection('loading');
 
         try {
             // Step 1: Request reviews from content script
-            console.log('Verdiqt: Requesting reviews from content script...');
+            console.log('Social Pulse: Requesting reviews from content script...');
             await this.scrapeReviews();
 
         } catch (error) {
-            console.error('Verdiqt: Analysis failed:', error);
+            console.error('Social Pulse: Analysis failed:', error);
             this.showError(error.message);
         }
     }
 
     async scrapeReviews() {
         return new Promise((resolve, reject) => {
-            console.log('Verdiqt: Sending SCRAPE_REVIEWS message...');
+            console.log('Social Pulse: Sending SCRAPE_REVIEWS message...');
             
             // Send message to content script to scrape reviews
             window.postMessage({ 
-                source: "VERDIQT_SIDEBAR", 
+                source: "SOCIAL_PULSE_SIDEBAR", 
                 action: "SCRAPE_REVIEWS" 
             }, "*");
 
             // Set timeout for response
             const timeout = setTimeout(() => {
-                console.error('Verdiqt: Timeout waiting for reviews');
+                console.error('Social Pulse: Timeout waiting for reviews');
                 reject(new Error('Timeout waiting for reviews. Make sure you are on a product page with reviews.'));
             }, 10000);
 
@@ -131,16 +131,16 @@ class VerdiqtSidebar {
 
     async handleReviewsData(reviews) {
         try {
-            console.log('Verdiqt: Handling reviews data...');
-            console.log('Verdiqt: Current domain:', window.location.hostname);
-            console.log('Verdiqt: User agent:', navigator.userAgent);
+            console.log('Social Pulse: Handling reviews data...');
+            console.log('Social Pulse: Current domain:', window.location.hostname);
+            console.log('Social Pulse: User agent:', navigator.userAgent);
             
             // Clear timeout
             if (this.scrapePromise?.timeout) {
                 clearTimeout(this.scrapePromise.timeout);
             }
 
-            console.log(`Verdiqt: Found ${reviews.length} reviews`);
+            console.log(`Social Pulse: Found ${reviews.length} reviews`);
             
             if (!reviews || reviews.length === 0) {
                 this.showError('No reviews found on this page. Make sure you are on a page with text content to analyze.');
@@ -148,22 +148,22 @@ class VerdiqtSidebar {
             }
 
             // Log sample reviews for debugging
-            console.log('Verdiqt: Sample reviews:', reviews.slice(0, 2).map(r => r.substring(0, 100) + '...'));
+            console.log('Social Pulse: Sample reviews:', reviews.slice(0, 2).map(r => r.substring(0, 100) + '...'));
 
             // Step 2: Analyze reviews with backend
-            console.log('Verdiqt: Calling backend...');
+            console.log('Social Pulse: Calling backend...');
             const analysisResult = await this.analyzeReviews(reviews);
             
-            console.log('Verdiqt: Got results:', analysisResult);
+            console.log('Social Pulse: Got results:', analysisResult);
             
             // Step 3: Show results in sidebar
             this.displayResults(analysisResult);
             this.showSection('results');
 
             // Step 4: Send results to content script for badge injection
-            console.log('Verdiqt: Sending badge injection message...');
+            console.log('Social Pulse: Sending badge injection message...');
             window.postMessage({
-                source: "VERDIQT_SIDEBAR",
+                source: "SOCIAL_PULSE_SIDEBAR",
                 action: "INJECT_BADGES", 
                 results: analysisResult.reviews
             }, "*");
@@ -174,8 +174,8 @@ class VerdiqtSidebar {
             }
 
         } catch (error) {
-            console.error('Verdiqt: Error handling reviews data:', error);
-            console.error('Verdiqt: Error occurred on domain:', window.location.hostname);
+            console.error('Social Pulse: Error handling reviews data:', error);
+            console.error('Social Pulse: Error occurred on domain:', window.location.hostname);
             this.showError(error.message);
             
             if (this.scrapePromise?.reject) {
@@ -190,9 +190,9 @@ class VerdiqtSidebar {
         const timeoutId = setTimeout(() => controller.abort(), 30000);
 
         try {
-            console.log('Verdiqt: Fetching from backend with', reviews.length, 'reviews');
-            console.log('Verdiqt: Current URL:', window.location.href);
-            console.log('Verdiqt: Current domain:', window.location.hostname);
+            console.log('Social Pulse: Fetching from backend with', reviews.length, 'reviews');
+            console.log('Social Pulse: Current URL:', window.location.href);
+            console.log('Social Pulse: Current domain:', window.location.hostname);
             
             // Try multiple backend URLs in order of preference
             const backendUrls = [
@@ -206,7 +206,7 @@ class VerdiqtSidebar {
             // Test which backend URL works
             for (const url of backendUrls) {
                 try {
-                    console.log(`Verdiqt: Testing backend URL: ${url}`);
+                    console.log(`Social Pulse: Testing backend URL: ${url}`);
                     
                     const healthResponse = await fetch(`${url}/health`, {
                         method: 'GET',
@@ -217,11 +217,11 @@ class VerdiqtSidebar {
                     
                     if (healthResponse.ok) {
                         workingUrl = url;
-                        console.log(`Verdiqt: Found working backend URL: ${url}`);
+                        console.log(`Social Pulse: Found working backend URL: ${url}`);
                         break;
                     }
                 } catch (e) {
-                    console.log(`Verdiqt: Backend URL ${url} failed:`, e.message);
+                    console.log(`Social Pulse: Backend URL ${url} failed:`, e.message);
                     continue;
                 }
             }
@@ -230,7 +230,7 @@ class VerdiqtSidebar {
                 throw new Error('Cannot connect to backend on any URL. Make sure backend is running: cd backend && uvicorn main:app --reload');
             }
             
-            console.log('Verdiqt: Backend health check passed, proceeding with analysis...');
+            console.log('Social Pulse: Backend health check passed, proceeding with analysis...');
             
             const response = await fetch(`${workingUrl}/analyze`, {
                 method: 'POST',
@@ -247,18 +247,18 @@ class VerdiqtSidebar {
 
             if (!response.ok) {
                 const errorText = await response.text();
-                console.error('Verdiqt: Backend error response:', errorText);
+                console.error('Social Pulse: Backend error response:', errorText);
                 throw new Error(`Backend returned error (${response.status}): ${errorText}`);
             }
 
             const result = await response.json();
-            console.log('Verdiqt: Backend response:', result);
+            console.log('Social Pulse: Backend response:', result);
             return result;
             
         } catch (error) {
             clearTimeout(timeoutId);
-            console.error('Verdiqt: Backend error:', error);
-            console.error('Verdiqt: Error details:', {
+            console.error('Social Pulse: Backend error:', error);
+            console.error('Social Pulse: Error details:', {
                 name: error.name,
                 message: error.message,
                 stack: error.stack
@@ -272,7 +272,7 @@ class VerdiqtSidebar {
                 if (domain.includes('reddit.com') || domain.includes('flipkart.com') || domain.includes('facebook.com')) {
                     throw new Error(`${domain} is blocking the connection to backend. This is a security restriction. Try using the extension on Amazon or other sites.`);
                 } else {
-                    throw new Error('Cannot connect to backend. Make sure Verdiqt backend is running: cd backend && uvicorn main:app --reload');
+                    throw new Error('Cannot connect to backend. Make sure Social Pulse backend is running: cd backend && uvicorn main:app --reload');
                 }
             }
             if (error.message.includes('CORS')) {
@@ -283,7 +283,7 @@ class VerdiqtSidebar {
     }
 
     displayResults(data) {
-        console.log('Verdiqt: Displaying results...');
+        console.log('Social Pulse: Displaying results...');
         
         // Update overall stats
         const positivePercent = document.getElementById('positive-percent');
@@ -322,10 +322,10 @@ class VerdiqtSidebar {
     }
 
     renderReviews(reviews) {
-        console.log('Verdiqt: Rendering', reviews.length, 'reviews');
+        console.log('Social Pulse: Rendering', reviews.length, 'reviews');
         
         if (!this.reviewsList) {
-            console.error('Verdiqt: Reviews list element not found');
+            console.error('Social Pulse: Reviews list element not found');
             return;
         }
         
@@ -351,7 +351,7 @@ class VerdiqtSidebar {
             this.reviewsList.appendChild(reviewCard);
         });
         
-        console.log('Verdiqt: Reviews rendered successfully');
+        console.log('Social Pulse: Reviews rendered successfully');
     }
 
     getSentimentIcon(sentiment) {
@@ -364,7 +364,7 @@ class VerdiqtSidebar {
     }
 
     showError(message) {
-        console.log('Verdiqt: Showing error:', message);
+        console.log('Social Pulse: Showing error:', message);
         
         const errorText = document.getElementById('error-text');
         if (errorText) {
@@ -373,8 +373,8 @@ class VerdiqtSidebar {
                 errorText.innerHTML = `
                     <div style="text-align: center; padding: 10px;">
                         <p style="margin-bottom: 15px; color: #EF4444; font-size: 14px;">${message}</p>
-                        <button onclick="window.verdiqtSidebar.retryConnection()" style="
-                            background: #667EEA !important;
+                        <button onclick="window.socialPulseSidebar.retryConnection()" style="
+                            background: #22D3EE !important;
                             color: white !important;
                             border: none !important;
                             padding: 10px 20px !important;
@@ -385,7 +385,7 @@ class VerdiqtSidebar {
                             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
                             font-weight: 500 !important;
                         ">🔄 Retry Connection</button>
-                        <button onclick="window.verdiqtSidebar.testBackend()" style="
+                        <button onclick="window.socialPulseSidebar.testBackend()" style="
                             background: #22C55E !important;
                             color: white !important;
                             border: none !important;
@@ -406,12 +406,12 @@ class VerdiqtSidebar {
     }
 
     async retryConnection() {
-        console.log('Verdiqt: Retrying connection...');
+        console.log('Social Pulse: Retrying connection...');
         this.loadAndAnalyze();
     }
 
     async testBackend() {
-        console.log('Verdiqt: Testing backend directly...');
+        console.log('Social Pulse: Testing backend directly...');
         try {
             const response = await fetch('http://localhost:8000/health');
             const data = await response.json();
@@ -422,7 +422,7 @@ class VerdiqtSidebar {
     }
 
     hideSidebar() {
-        console.log('Verdiqt: Hiding sidebar');
+        console.log('Social Pulse: Hiding sidebar');
         
         if (this.sidebar) {
             this.sidebar.classList.remove('visible');
@@ -430,7 +430,7 @@ class VerdiqtSidebar {
         
         // Send message to content script to hide sidebar
         window.postMessage({
-            source: "VERDIQT_SIDEBAR",
+            source: "SOCIAL_PULSE_SIDEBAR",
             action: "HIDE_SIDEBAR"
         }, "*");
     }
@@ -443,5 +443,5 @@ class VerdiqtSidebar {
 }
 
 // Initialize sidebar immediately (not waiting for DOMContentLoaded)
-console.log('Verdiqt: Creating sidebar instance...');
-window.verdiqtSidebar = new VerdiqtSidebar();
+console.log('Social Pulse: Creating sidebar instance...');
+window.socialPulseSidebar = new SocialPulseSidebar();

@@ -1,5 +1,5 @@
 @echo off
-echo 🎯 Verdiqt Windows Setup Script
+echo 🎯 Social Pulse Windows Setup Script
 echo ================================
 
 echo.

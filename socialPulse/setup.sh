@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🎯 Verdiqt Setup Script"
+echo "🎯 Social Pulse Setup Script"
 echo "======================"
 
 echo ""

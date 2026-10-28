@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Verdiqt",
+  "name": "Social Pulse",
   "version": "1.0.0",
-  "description": "AI powered review analyzer for any website",
+  "description": "AI-powered sentiment analysis and insights for webpage content",
   "permissions": [
     "activeTab",
     "scripting",
@@ -21,7 +21,9 @@
         "http://*/*",
         "https://*/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_end",
       "all_frames": false
     }
@@ -31,7 +33,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["sidebar.html", "sidebar.css", "sidebar.js", "logo.png"],
+      "resources": [
+        "sidebar.html",
+        "sidebar.css",
+        "sidebar.js",
+        "logo.png"
+      ],
       "matches": [
         "http://*/*",
         "https://*/*"

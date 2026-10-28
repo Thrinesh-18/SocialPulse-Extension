@@ -1,4 +1,4 @@
-# FastAPI backend for Verdiqt Chrome extension with multilingual sentiment analysis
+# FastAPI backend for Social Pulse Chrome extension with multilingual sentiment analysis
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -156,11 +156,11 @@ def analyze_reviews(input_data: ReviewsInput):
                 # Detect language
                 detected_language = detect_language(review_text)
                 languages_detected.add(detected_language)
-                print(f"Verdiqt: Detected language: {detected_language}")
+                print(f"Social Pulse: Detected language: {detected_language}")
                 
                 # Get sentiment predictions
                 predictions = sentiment_pipeline(review_text)
-                print(f"Verdiqt: Raw prediction for '{review_text[:50]}...': {predictions}")
+                print(f"Social Pulse: Raw prediction for '{review_text[:50]}...': {predictions}")
                 
                 # Handle different response formats more robustly
                 best_prediction = None
@@ -179,7 +179,7 @@ def analyze_reviews(input_data: ReviewsInput):
                     # Direct prediction format: {'label': 'POSITIVE', 'score': 0.9}
                     best_prediction = predictions
                 else:
-                    print(f"Verdiqt: Unexpected prediction format: {type(predictions)} - {predictions}")
+                    print(f"Social Pulse: Unexpected prediction format: {type(predictions)} - {predictions}")
                     best_prediction = None
                 
                 if best_prediction is None:
@@ -190,7 +190,7 @@ def analyze_reviews(input_data: ReviewsInput):
                 label = original_label.upper()
                 score = float(best_prediction.get('score', 0))
                 
-                print(f"Verdiqt: Parsed - Original: {original_label}, Upper: {label}, Score: {score}")
+                print(f"Social Pulse: Parsed - Original: {original_label}, Upper: {label}, Score: {score}")
                 
                 # Enhanced label mapping - check both original and uppercase
                 if (any(pos in label for pos in ['POSITIVE', 'POS', 'LABEL_2']) or 
@@ -210,11 +210,11 @@ def analyze_reviews(input_data: ReviewsInput):
                         sentiment = "negative"
                     else:
                         sentiment = "neutral"
-                    print(f"Verdiqt: Used score-based mapping for unknown label '{original_label}': {sentiment}")
+                    print(f"Social Pulse: Used score-based mapping for unknown label '{original_label}': {sentiment}")
                 
                 confidence = round(score * 100, 1)
                 
-                print(f"Verdiqt: Final result - Sentiment: {sentiment}, Confidence: {confidence}%, Language: {detected_language}")
+                print(f"Social Pulse: Final result - Sentiment: {sentiment}, Confidence: {confidence}%, Language: {detected_language}")
                 
                 results.append(ReviewResult(
                     text=review_text,
